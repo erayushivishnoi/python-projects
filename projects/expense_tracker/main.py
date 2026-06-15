@@ -1,30 +1,70 @@
 # I am demonstrating my learning so far in the form of this expense tracker project
-# expense tracker - phase 1
-# for now everything stays in memory, no file saving yet
-# I have planned this in 2 more phases
-# phase 2:
-#   - will store data to csv files
-#   - will add date to store the data in csv
-#   - predefined categories to select from
-# phase 3: will add exceptional handling to this code
+# expense tracker - phase 2
+# now saves data to a csv file so expenses persist between runs
+# added date tracking and predefined categories
+# phase 3: will add error handling to this code
 
-# In memory list to store the expenses
+import csv
+from datetime import date
+
+CSV_FILE = "expenses.csv"
+
+CATEGORIES = [
+    "Food",
+    "Transport",
+    "Shopping",
+    "Bills",
+    "Entertainment",
+    "Health",
+    "Other",
+]
+
+# list to store expenses in memory (loaded from csv on startup)
 expenses = []
+
+
+def load_expenses():
+    """load expenses from the csv file into the list"""
+    file = open(CSV_FILE, "r")
+    reader = csv.DictReader(file)
+    for row in reader:
+        row["amount"] = float(row["amount"])
+        expenses.append(row)
+    file.close()
+
+
+def save_all_expenses():
+    """save all expenses to the csv file"""
+    file = open(CSV_FILE, "w", newline="")
+    writer = csv.DictWriter(file, fieldnames=["date", "category", "description", "amount"])
+    writer.writeheader()
+    for expense in expenses:
+        writer.writerow(expense)
+    file.close()
 
 
 def add_expense():
     """ask the user for expense details and add it to the list"""
-    category = input("Category: ")
+    print("Categories:")
+    for i in range(len(CATEGORIES)):
+        print(f"  {i + 1}. {CATEGORIES[i]}")
+
+    cat_choice = int(input("Pick a category number: "))
+    category = CATEGORIES[cat_choice - 1]
+
     description = input("Description: ")
     amount = float(input("Amount: "))
+    today = date.today().isoformat()
 
     expense = {
+        "date": today,
         "category": category,
         "description": description,
         "amount": amount,
     }
     expenses.append(expense)
-    print(f"Added {description} : {amount} in {category}")
+    save_all_expenses()
+    print(f"Added {description} : {amount} in {category} on {today}")
 
 
 def list_expenses():
@@ -34,7 +74,7 @@ def list_expenses():
         return
 
     for expense in expenses:
-        print(f"{expense['category']} | {expense['description']} | {expense['amount']}")
+        print(f"{expense['date']} | {expense['category']} | {expense['description']} | {expense['amount']}")
 
     total = 0
     for expense in expenses:
@@ -64,6 +104,7 @@ def expenses_by_category():
 
 
 def main():
+    load_expenses()
     print("Expense Tracker")
 
     while True:
