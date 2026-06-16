@@ -1,8 +1,8 @@
 # I am demonstrating my learning so far in the form of this expense tracker project
-# expense tracker - phase 2
+# expense tracker - phase 3
 # now saves data to a csv file so expenses persist between runs
 # added date tracking and predefined categories
-# phase 3: will add error handling to this code
+# added error handling so bad input doesn't crash the program
 
 import csv
 from datetime import date
@@ -25,12 +25,15 @@ expenses = []
 
 def load_expenses():
     """load expenses from the csv file into the list"""
-    file = open(CSV_FILE, "r")
-    reader = csv.DictReader(file)
-    for row in reader:
-        row["amount"] = float(row["amount"])
-        expenses.append(row)
-    file.close()
+    try:
+        file = open(CSV_FILE, "r")
+        reader = csv.DictReader(file)
+        for row in reader:
+            row["amount"] = float(row["amount"])
+            expenses.append(row)
+        file.close()
+    except FileNotFoundError:
+        pass  # no file yet, start fresh
 
 
 def save_all_expenses():
@@ -49,11 +52,26 @@ def add_expense():
     for i in range(len(CATEGORIES)):
         print(f"  {i + 1}. {CATEGORIES[i]}")
 
-    cat_choice = int(input("Pick a category number: "))
+    try:
+        cat_choice = int(input("Pick a category number: "))
+    except ValueError:
+        print("Please enter a number")
+        return
+
+    if cat_choice < 1 or cat_choice > len(CATEGORIES):
+        print(f"Please pick a number between 1 and {len(CATEGORIES)}")
+        return
+
     category = CATEGORIES[cat_choice - 1]
 
     description = input("Description: ")
-    amount = float(input("Amount: "))
+
+    try:
+        amount = float(input("Amount: "))
+    except ValueError:
+        print("Please enter a valid amount")
+        return
+
     today = date.today().isoformat()
 
     expense = {

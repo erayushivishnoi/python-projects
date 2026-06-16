@@ -2,17 +2,14 @@
 
 A command-line tool to track expenses and see where my money goes.
 
-## What it does (Phase 2)
+## What it does (Phase 3)
 
 - Add an expense by picking from predefined categories
 - Each expense is saved with today's date automatically
 - All data is saved to a CSV file so expenses persist between runs
 - List all expenses with date, category, description, and total
 - Group expenses by category with totals
-
-## Planned for later
-
-- Phase 3: add error handling
+- Bad input shows a helpful message instead of crashing
 
 ## How to run
 
@@ -42,3 +39,8 @@ python main.py
 - Working with dates using date.today() and isoformat()
 - Using a constant list for predefined choices
 - Displaying numbered options and converting user input to pick from a list
+
+### Phase 3
+- Using try/except to catch ValueError and FileNotFoundError
+- Validating user input before using it (range checking)
+- Using early return to exit a function when input is bad
