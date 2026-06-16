@@ -1,8 +1,7 @@
 # I am demonstrating my learning so far in the form of this file organizer project
-# file organizer - phase 1
-# basic version that organizes files in a folder by their extension
-# I have planned this in 2 more phases
-# phase 2: show a preview before moving, ask for confirmation, summary of what was moved
+# file organizer - phase 2
+# now shows a preview of what will happen and asks before moving
+# also shows a summary at the end
 # phase 3: will add error handling to this code
 
 import os
@@ -32,34 +31,53 @@ def get_folder_name(extension):
     return "Other"
 
 
-def organize_files(folder_path):
-    """move files in the given folder into subfolders based on their extension"""
+def get_files(folder_path):
+    """get all files in the folder and return them as a list"""
     path = Path(folder_path)
-
     files = []
     for item in path.iterdir():
         if item.is_file():
             files.append(item)
+    return files
 
-    if len(files) == 0:
-        print("No files to organize")
-        return
 
-    moved = 0
+def preview_moves(files):
+    """show the user what will happen before moving anything"""
+    print("\nPreview:")
+    for file in files:
+        folder_name = get_folder_name(file.suffix)
+        print(f"  {file.name} -> {folder_name}/")
+
+
+def organize_files(folder_path, files):
+    """move files into subfolders based on their extension"""
+    path = Path(folder_path)
+
+    # keep track of how many files go to each folder
+    summary = {}
+
     for file in files:
         folder_name = get_folder_name(file.suffix)
         target_folder = path / folder_name
 
         if not target_folder.exists():
             os.mkdir(target_folder)
-            print(f"Created folder: {folder_name}")
 
         new_path = target_folder / file.name
         os.rename(str(file), str(new_path))
-        print(f"Moved: {file.name} -> {folder_name}/")
-        moved = moved + 1
 
-    print(f"\nDone! Moved {moved} files")
+        if folder_name in summary:
+            summary[folder_name] = summary[folder_name] + 1
+        else:
+            summary[folder_name] = 1
+
+    # show summary
+    print("\nSummary:")
+    total = 0
+    for folder in summary:
+        print(f"  {folder}: {summary[folder]} files")
+        total = total + summary[folder]
+    print(f"  Total: {total} files moved")
 
 
 def main():
@@ -70,8 +88,20 @@ def main():
         print("That folder does not exist")
         return
 
-    print(f"\nOrganizing files in: {folder_path}")
-    organize_files(folder_path)
+    files = get_files(folder_path)
+
+    if len(files) == 0:
+        print("No files to organize")
+        return
+
+    preview_moves(files)
+
+    confirm = input("\nProceed? (y/n): ")
+    if confirm != "y":
+        print("Cancelled")
+        return
+
+    organize_files(folder_path, files)
 
 
 main()
