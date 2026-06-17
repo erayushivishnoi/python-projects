@@ -1,8 +1,8 @@
 # I am demonstrating my learning so far in the form of this file organizer project
-# file organizer - phase 2
+# file organizer - phase 3
 # now shows a preview of what will happen and asks before moving
 # also shows a summary at the end
-# phase 3: will add error handling to this code
+# added error handling so bad files or permissions don't crash the program
 
 import os
 from pathlib import Path
@@ -56,6 +56,7 @@ def organize_files(folder_path, files):
     # keep track of how many files go to each folder
     summary = {}
 
+    skipped = 0
     for file in files:
         folder_name = get_folder_name(file.suffix)
         target_folder = path / folder_name
@@ -64,7 +65,18 @@ def organize_files(folder_path, files):
             os.mkdir(target_folder)
 
         new_path = target_folder / file.name
-        os.rename(str(file), str(new_path))
+
+        if new_path.exists():
+            print(f"Skipped: {file.name} (already exists in {folder_name}/)")
+            skipped = skipped + 1
+            continue
+
+        try:
+            os.rename(str(file), str(new_path))
+        except OSError:
+            print(f"Skipped: {file.name} (could not move)")
+            skipped = skipped + 1
+            continue
 
         if folder_name in summary:
             summary[folder_name] = summary[folder_name] + 1
@@ -78,6 +90,8 @@ def organize_files(folder_path, files):
         print(f"  {folder}: {summary[folder]} files")
         total = total + summary[folder]
     print(f"  Total: {total} files moved")
+    if skipped > 0:
+        print(f"  Skipped: {skipped} files")
 
 
 def main():

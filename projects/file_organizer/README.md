@@ -2,7 +2,7 @@
 
 Automation script to organize files by type using the os module and pathlib.
 
-## What it does (Phase 2)
+## What it does (Phase 3)
 
 - Ask the user for a folder path
 - Scan the folder for files
@@ -13,10 +13,7 @@ Automation script to organize files by type using the os module and pathlib.
 - Files with unknown extensions go to Other/
 - Create subfolders automatically if they don't exist
 - Show a summary of how many files went to each folder
-
-## Planned for later
-
-- Phase 3: add error handling
+- Skips duplicate files and files that can't be moved instead of crashing
 
 ## How to run
 
@@ -47,3 +44,9 @@ python main.py
 - Building a preview by looping through data without changing it
 - Asking for user confirmation before doing something destructive
 - Using a dictionary to count and summarize results
+
+### Phase 3
+- Using try/except to catch OSError when a file can't be moved
+- Checking if a file already exists before overwriting it with Path.exists()
+- Using continue to skip to the next item in a loop
+- Tracking skipped files alongside moved files in the summary
