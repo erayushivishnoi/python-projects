@@ -1,10 +1,11 @@
 # I am demonstrating my learning so far in the form of this bookmark manager API project
-# bookmark manager api - phase 2
+# bookmark manager api - phase 3
 # now uses SQLite database for persistent storage
 # added update endpoint, filter by tag, and search by title
-# phase 3: will add error handling and tests with pytest
+# added error handling and tests with pytest
 
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from storage import (
     create_table,
     add_bookmark,
@@ -35,13 +36,15 @@ def list_bookmarks(tag: str = None, search: str = None):
 def get_bookmark(bookmark_id: int):
     bookmark = get_bookmark_by_id(bookmark_id)
     if bookmark is None:
-        return {"error": "Bookmark not found"}
+        return JSONResponse({"error": "Bookmark not found"}, status_code=404)
     return bookmark
 
 
 @app.post("/bookmarks")
 async def create_bookmark(request: Request):
     data = await request.json()
+    if "title" not in data or "url" not in data:
+        return JSONResponse({"error": "title and url are required"}, status_code=400)
     bookmark = add_bookmark(data["title"], data["url"], data.get("tags", []))
     return bookmark
 
@@ -49,9 +52,11 @@ async def create_bookmark(request: Request):
 @app.put("/bookmarks/{bookmark_id}")
 async def edit_bookmark(bookmark_id: int, request: Request):
     data = await request.json()
+    if "title" not in data or "url" not in data:
+        return JSONResponse({"error": "title and url are required"}, status_code=400)
     bookmark = update_bookmark(bookmark_id, data["title"], data["url"], data.get("tags", []))
     if bookmark is None:
-        return {"error": "Bookmark not found"}
+        return JSONResponse({"error": "Bookmark not found"}, status_code=404)
     return bookmark
 
 
@@ -60,4 +65,4 @@ def remove_bookmark(bookmark_id: int):
     deleted = delete_bookmark(bookmark_id)
     if deleted:
         return {"message": "Bookmark deleted"}
-    return {"error": "Bookmark not found"}
+    return JSONResponse({"error": "Bookmark not found"}, status_code=404)

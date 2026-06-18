@@ -2,7 +2,7 @@
 
 REST API for saving and organizing links using FastAPI and SQLite.
 
-## What it does (Phase 2)
+## What it does (Phase 3)
 
 - Add a bookmark with title, URL, and optional tags (POST /bookmarks)
 - List all bookmarks (GET /bookmarks)
@@ -12,10 +12,8 @@ REST API for saving and organizing links using FastAPI and SQLite.
 - Filter bookmarks by tag (GET /bookmarks?tag=python)
 - Search bookmarks by title (GET /bookmarks?search=docs)
 - Data is stored in a SQLite database so it persists between runs
-
-## Planned for later
-
-- Phase 3: error handling and tests with pytest
+- Returns proper HTTP status codes (400 for bad input, 404 for not found)
+- 14 tests covering all endpoints and error cases
 
 ## How to run
 
@@ -26,15 +24,23 @@ uvicorn main:app --reload
 
 Then open http://localhost:8000/docs to try the API.
 
+## How to run tests
+
+```
+pip install httpx pytest
+pytest test_api.py -v
+```
+
 ## Project structure
 
 - main.py - app setup and API endpoints (orchestrator)
 - storage.py - SQLite database functions for all bookmark operations
+- test_api.py - pytest tests for all endpoints
 
 ## Built with
 
-- Python, FastAPI, uvicorn, SQLite
-- Split across two files instead of one big main.py
+- Python, FastAPI, uvicorn, SQLite, pytest
+- Split across three files instead of one big main.py
 
 ## What I learned building this
 
@@ -55,3 +61,10 @@ Then open http://localhost:8000/docs to try the API.
 - Using query parameters in FastAPI for filtering and search
 - Using SQL LIKE for keyword search
 - Storing lists as comma-separated strings in the database
+
+### Phase 3
+- Returning proper HTTP status codes (400, 404) using JSONResponse
+- Validating request data before using it (checking for required fields)
+- Writing tests with pytest and FastAPI's TestClient
+- Using a pytest fixture to set up a clean database for each test
+- Testing both happy paths and error cases
