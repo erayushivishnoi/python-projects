@@ -8,8 +8,8 @@ This repo is where I build things as I learn. Each project focuses on a specific
 
 | Project | What it is | Skills practiced |
 |---|---|---|
-| [Expense Tracker](projects/expense_tracker/) | CLI tool to track expenses | Lists, dictionaries, functions, loops, f-strings, user input |
-| File Organizer | Script to sort messy folders by file type | OS module, pathlib, file operations, automation |
-| Bookmark Manager API | REST API for saving and organizing links | FastAPI, SQLite, SQL, REST, testing with pytest |
+| [Expense Tracker](projects/expense_tracker/) | CLI tool to track expenses | Lists, dicts, functions, CSV, datetime, error handling |
+| [File Organizer](projects/file_organizer/) | Script to sort messy folders by file type | OS module, pathlib, file operations, automation |
+| [Bookmark Manager API](projects/bookmark_manager_api/) | REST API for saving and organizing links | FastAPI, REST, async/await, imports across files |
 
-I'm building these one at a time. The ones without links are coming soon.
+I'm building these one at a time. Bookmark Manager API is in progress (phase 1 done).
